@@ -2,6 +2,8 @@
 
 **UUON Foundation Inc. — Phillip Aguilar Ruiz III**
 
+![Wave Field 3D Engine](docs/images/wave-engine-3d.png)
+
 Live: [https://uuon-foundation.github.io/uuon-wave-field-3d-engine/](https://uuon-foundation.github.io/uuon-wave-field-3d-engine/)
 
 ---
