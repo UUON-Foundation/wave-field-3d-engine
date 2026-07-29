@@ -1,6 +1,6 @@
 {
   "name": "@uuon-foundation/wave-field-3d-engine",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Parametric wave-deformation engine — 24 physically-grounded algorithms applied to 3D geometry with animated GLB morph-target export",
   "homepage": "https://github.com/UUON-Foundation/wave-field-3d-engine#readme",
   "bugs": {
