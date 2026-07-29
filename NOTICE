@@ -1,0 +1,79 @@
+NOTICE — Wave Field 3D Engine
+UUON Foundation Inc. — Phillip Aguilar Ruiz III
+
+================================================================================
+ORIGIN
+================================================================================
+
+Engine name:    Wave Field 3D Engine
+Repository:     uuon-wave-field-3d-engine
+Author:         Phillip Aguilar Ruiz III
+Organization:   UUON Foundation Inc.
+Contact:        phi1@uuonfoundation.com
+License:        USAL-1.0
+
+================================================================================
+ARCHITECTURE — PUBLIC vs PROPRIETARY
+================================================================================
+
+PUBLIC (in this repository):
+  index.html          — renderer shell, Three.js scene, UI, export wrappers
+                        No algorithm logic. No surface coordinate math.
+                        No GLB encoding. Delegates all computation to core.
+
+PROPRIETARY (distributed separately under commercial license):
+  core/engine.js      — the Wave Field Engine core. Contains:
+                          WFE_surfCoord()    unified surface coordinate abstraction
+                          WFE_ALG            24-algorithm catalog, shared fn() interface
+                          WFE_bake()         deterministic frame sampler
+                          WFE_buildGLB()     GLTF 2.0 morph-target GLB encoder
+                        This file is NOT committed to the public repository.
+                        It is the licensed artifact.
+
+The public index.html calls window.WFE.* — the API surface exposed by core/engine.js.
+Without core/engine.js the renderer will display an error and the engine will not run.
+
+================================================================================
+THIRD-PARTY DEPENDENCIES
+================================================================================
+
+1. Three.js r128
+   Source:   https://github.com/mrdoob/three.js
+   CDN:      https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js
+   License:  MIT
+   Use:      3D scene, geometry primitives, WebGL renderer
+
+2. Three.js OrbitControls r128
+   CDN:      https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js
+   License:  MIT
+   Use:      Mouse and touch camera interaction
+
+3. Google Fonts — Inter
+   Source:   https://fonts.google.com/specimen/Inter
+   License:  SIL Open Font License 1.1
+   Use:      UI typography
+
+NOTE: Three.js GLTFExporter is NOT used. GLB encoding is handled entirely
+by WFE_buildGLB() in core/engine.js, which implements the GLTF 2.0 binary
+specification directly. This was necessary because GLTFExporter r128 fails
+silently when exporting morph-target animations (produces a 15-byte corrupt file).
+
+================================================================================
+MATHEMATICAL PRIOR ART
+================================================================================
+
+The wave equations implemented in core/engine.js are prior-art mathematics.
+The IP is in the architecture — the unified interface, surface coordinate
+abstraction, and morph-target pipeline — not in any individual equation.
+
+References for the mathematical models:
+- Gerstner (1809), Rayleigh (1885), Love (1911), Faraday (1831)
+- Phillips (1958) — ocean spectrum
+- Zabusky & Kruskal (1965) — soliton
+- Mandelbrot & Van Ness (1968) — fBm
+
+See docs/ACADEMIC-RECORD.md for full provenance record.
+
+================================================================================
+END OF NOTICE
+================================================================================
