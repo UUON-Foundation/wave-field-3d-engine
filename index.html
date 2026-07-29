@@ -1,564 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wave Field 3D Engine — UUON Foundation</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #ffffff; color: #111111; overflow: hidden;
-        }
-        .container { display: grid; grid-template-columns: 320px 1fr; height: 100vh; }
-        .controls {
-            background: rgba(255,255,255,0.97); backdrop-filter: blur(10px);
-            border-right: 1px solid rgba(0,0,0,0.1); padding: 20px;
-            overflow-y: auto; box-shadow: 4px 0 20px rgba(0,0,0,0.05);
-        }
-        .viewer { position: relative; background: #ffffff; }
-        #canvas { width: 100%; height: 100%; display: block; }
-        .section {
-            margin-bottom: 25px; padding: 15px;
-            background: rgba(0,0,0,0.025); border-radius: 12px;
-            border: 1px solid rgba(0,0,0,0.08);
-        }
-        .section.collapsed .section-body { display: none; }
-        .section h3 {
-            color: #111111; margin-bottom: 15px; font-size: 13px;
-            font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px;
-            display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer; user-select: none;
-        }
-        .section h3 .chevron { transition: transform 0.2s ease; font-size: 11px; color: #999; }
-        .section.collapsed h3 .chevron { transform: rotate(-90deg); }
-        .control-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-size: 12px; color: #666666; }
-        select, input[type="range"] { width: 100%; margin-bottom: 8px; }
-        select {
-            background: #f4f4f4; border: 1px solid #d5d5d5; color: #111111;
-            padding: 8px; border-radius: 6px; font-family: 'Inter', sans-serif;
-        }
-        input[type="range"] { background: transparent; }
-        input[type="range"]::-webkit-slider-track { background: rgba(0,0,0,0.12); height: 4px; border-radius: 2px; }
-        input[type="range"]::-webkit-slider-thumb {
-            appearance: none; background: #111111; height: 16px; width: 16px;
-            border-radius: 50%; cursor: pointer;
-        }
-        .value-display { color: #111111; font-size: 11px; text-align: right; font-weight: 500; }
-        button {
-            background: #111111; color: #ffffff; border: none;
-            padding: 12px 24px; border-radius: 8px; cursor: pointer;
-            font-weight: 600; font-family: 'Inter', sans-serif;
-            width: 100%; margin: 5px 0; transition: all 0.3s ease;
-        }
-        button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-        button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
-        button.secondary { background: #ffffff; color: #111111; border: 1px solid #111111; }
-        button.success { background: #1a5c1a; }
-        .info-panel {
-            position: absolute; top: 20px; right: 20px;
-            background: rgba(255,255,255,0.92); backdrop-filter: blur(10px);
-            padding: 15px; border-radius: 12px;
-            border: 1px solid rgba(0,0,0,0.1); min-width: 220px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-        }
-        .algorithm-info { font-size: 11px; line-height: 1.55; color: #222222; }
-        .algorithm-code {
-            color: #111111; font-family: 'Courier New', monospace; font-weight: 700;
-            background: rgba(0,0,0,0.06); padding: 2px 4px; border-radius: 3px;
-        }
-        .export-section { border: 2px solid #111111; background: rgba(0,0,0,0.02); }
-        .export-section.bake { border-style: dashed; }
-        .stats { font-size: 10px; color: #777777; margin-top: 10px; line-height: 1.7; }
-        .ok  { color: #1a5c1a; font-weight: 600; }
-        .err { color: #8b1a1a; font-weight: 600; }
-        .checkbox-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-        .checkbox-row label { margin-bottom: 0; }
-        .inline-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        #engineStatus {
-            font-size: 10px; text-align: center; padding: 6px;
-            border-radius: 6px; margin-bottom: 16px;
-            background: rgba(0,0,0,0.04); color: #888;
-            font-family: monospace; letter-spacing: 0.05em;
-        }
-        #engineStatus.ready { background: rgba(26,92,26,0.08); color: #1a5c1a; }
-        #engineStatus.error { background: rgba(139,26,26,0.08); color: #8b1a1a; }
-    </style>
-</head>
-<body>
-<div class="container">
-  <div class="controls">
-    <h2 style="color:#111111;font-weight:700;letter-spacing:0.5px;margin-bottom:8px;text-align:center;">Wave Field 3D Engine</h2>
-    <div style="font-size:10px;color:#888;text-align:center;margin-bottom:12px;letter-spacing:0.5px;">UUON FOUNDATION INC.</div>
-    <div id="engineStatus">loading engine core...</div>
+Wave Field 3D Engine
+UUON FOUNDATION INC.
+loading engine core...
+BASE SHAPE
+▾
+3D Shape:
+            Sphere
+            Cube
+            Pyramid (Cone)
+          
+Mesh Resolution:
+40 segments
+WAVE ALGORITHM
+▾
+Algorithm:
+            
+              F₁: Basic Sine Wave
+              F₂: Cosine Wave
+              F₁₀: Composite Waves
+              F₁₁: Modulated Waves
+              F₁₂: Harmonic Series
+            
+            
+              F₁₈: Exponential Damped
+              F₂₁: Soliton Waves
+            
+            
+              G₁: Deep Water Waves
+              G₂: Shallow Water
+              G₃: Gerstner Waves
+              C₁: Capillary Waves
+              C₄: Faraday Waves
+            
+            
+              R₁: Circular Ripples
+              R₂: Bessel Ripples
+              I₃: Standing Waves
+              I₂: Beat Patterns
+            
+            
+              S₃: Rayleigh Waves
+              S₄: Love Waves
+            
+            
+              N₁: Layered Hash Noise
+              N₃: Fractal Brownian Motion
+              N₄: Ridged Noise
+              N₅: Turbulence
+              N₁₀: Curl Noise
+            
+            
+              FFT₁: FFT Ocean
+              FFT₃: Phillips Spectrum
+            
+          
+WAVE PARAMETERS
+▾
+Amplitude:
+0.30
+Frequency:
+1.0
+Animation Speed:
+1.0
+Complexity (Octaves):
+3
+VISUAL SETTINGS
+▾
 
-    <div class="section">
-      <h3><span>Base Shape</span><span class="chevron">▾</span></h3>
-      <div class="section-body">
-        <div class="control-group">
-          <label>3D Shape:</label>
-          <select id="shape">
-            <option value="sphere">Sphere</option>
-            <option value="cube">Cube</option>
-            <option value="pyramid">Pyramid (Cone)</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <label>Mesh Resolution:</label>
-          <input type="range" id="resolution" min="10" max="80" value="40">
-          <div class="value-display" id="resolutionValue">40 segments</div>
-        </div>
-      </div>
-    </div>
+Wireframe Mode
 
-    <div class="section">
-      <h3><span>Wave Algorithm</span><span class="chevron">▾</span></h3>
-      <div class="section-body">
-        <div class="control-group">
-          <label>Algorithm:</label>
-          <select id="algorithm">
-            <optgroup label="Basic Functions">
-              <option value="sine">F₁: Basic Sine Wave</option>
-              <option value="cosine">F₂: Cosine Wave</option>
-              <option value="composite">F₁₀: Composite Waves</option>
-              <option value="modulated">F₁₁: Modulated Waves</option>
-              <option value="harmonic">F₁₂: Harmonic Series</option>
-            </optgroup>
-            <optgroup label="Damped Waves">
-              <option value="damped">F₁₈: Exponential Damped</option>
-              <option value="soliton">F₂₁: Soliton Waves</option>
-            </optgroup>
-            <optgroup label="Physical Models">
-              <option value="water">G₁: Deep Water Waves</option>
-              <option value="shallow">G₂: Shallow Water</option>
-              <option value="gerstner">G₃: Gerstner Waves</option>
-              <option value="capillary">C₁: Capillary Waves</option>
-              <option value="faraday">C₄: Faraday Waves</option>
-            </optgroup>
-            <optgroup label="Ripples &amp; Interference">
-              <option value="ripple">R₁: Circular Ripples</option>
-              <option value="bessel">R₂: Bessel Ripples</option>
-              <option value="standing">I₃: Standing Waves</option>
-              <option value="beats">I₂: Beat Patterns</option>
-            </optgroup>
-            <optgroup label="Seismic Waves">
-              <option value="rayleigh">S₃: Rayleigh Waves</option>
-              <option value="love">S₄: Love Waves</option>
-            </optgroup>
-            <optgroup label="Noise Functions">
-              <option value="perlin">N₁: Layered Hash Noise</option>
-              <option value="fbm">N₃: Fractal Brownian Motion</option>
-              <option value="ridged">N₄: Ridged Noise</option>
-              <option value="turbulence">N₅: Turbulence</option>
-              <option value="curl">N₁₀: Curl Noise</option>
-            </optgroup>
-            <optgroup label="Spectral Methods">
-              <option value="fft_ocean">FFT₁: FFT Ocean</option>
-              <option value="phillips">FFT₃: Phillips Spectrum</option>
-            </optgroup>
-          </select>
-        </div>
-      </div>
-    </div>
+Auto Rotate
+BAKE & EXPORT ANIMATION (.GLB)
+▾
+Keyframes:
+24
+Loop (sec):
+2.0
 
-    <div class="section">
-      <h3><span>Wave Parameters</span><span class="chevron">▾</span></h3>
-      <div class="section-body">
-        <div class="control-group">
-          <label>Amplitude:</label>
-          <input type="range" id="amplitude" min="0" max="2" step="0.05" value="0.3">
-          <div class="value-display" id="amplitudeValue">0.30</div>
-        </div>
-        <div class="control-group">
-          <label>Frequency:</label>
-          <input type="range" id="frequency" min="0.1" max="5" step="0.1" value="1.0">
-          <div class="value-display" id="frequencyValue">1.0</div>
-        </div>
-        <div class="control-group">
-          <label>Animation Speed:</label>
-          <input type="range" id="speed" min="0" max="3" step="0.1" value="1.0">
-          <div class="value-display" id="speedValue">1.0</div>
-        </div>
-        <div class="control-group">
-          <label>Complexity (Octaves):</label>
-          <input type="range" id="octaves" min="1" max="8" value="3">
-          <div class="value-display" id="octavesValue">3</div>
-        </div>
-      </div>
-    </div>
+Preview baked loop in viewport
+Bake Morph-Target Animation Export Animated GLB + Metadata
+Not baked yet.
+EXPORT STATIC FRAME
+▾
+Export Current Frame (.obj) Freeze to Current Frame
+Ready.
 
-    <div class="section">
-      <h3><span>Visual Settings</span><span class="chevron">▾</span></h3>
-      <div class="section-body">
-        <div class="checkbox-row">
-          <input type="checkbox" id="wireframe"><label for="wireframe">Wireframe Mode</label>
-        </div>
-        <div class="checkbox-row">
-          <input type="checkbox" id="autoRotate" checked><label for="autoRotate">Auto Rotate</label>
-        </div>
-      </div>
-    </div>
-
-    <div class="section export-section bake">
-      <h3><span>Bake &amp; Export Animation (.glb)</span><span class="chevron">▾</span></h3>
-      <div class="section-body">
-        <div class="control-group inline-pair">
-          <div>
-            <label>Keyframes:</label>
-            <input type="range" id="bakeFrames" min="4" max="60" value="24">
-            <div class="value-display" id="bakeFramesValue">24</div>
-          </div>
-          <div>
-            <label>Loop (sec):</label>
-            <input type="range" id="bakeDuration" min="0.5" max="10" step="0.5" value="2">
-            <div class="value-display" id="bakeDurationValue">2.0</div>
-          </div>
-        </div>
-        <div class="checkbox-row">
-          <input type="checkbox" id="previewBaked">
-          <label for="previewBaked">Preview baked loop in viewport</label>
-        </div>
-        <button id="bakeBtn">Bake Morph-Target Animation</button>
-        <button id="exportGlbBtn" disabled>Export Animated GLB + Metadata</button>
-        <div class="stats" id="bakeStats">Not baked yet.</div>
-      </div>
-    </div>
-
-    <div class="section export-section">
-      <h3><span>Export Static Frame</span><span class="chevron">▾</span></h3>
-      <div class="section-body">
-        <button id="exportObjBtn" class="secondary">Export Current Frame (.obj)</button>
-        <button id="freezeBtn" class="secondary">Freeze to Current Frame</button>
-        <div class="stats" id="exportStats">Ready.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="viewer">
-    <canvas id="canvas"></canvas>
-    <div class="info-panel">
-      <div class="algorithm-info" id="algInfo">
-        <div><span class="algorithm-code">F₁: SINE-001</span></div>
-        <div style="margin-top:5px;">Basic sinusoidal surface wave</div>
-        <div style="margin-top:8px;font-family:monospace;font-size:10px;color:#555;">F₁(s,t) = A sin(ks + ωt)</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!--
-  Public dependencies (MIT licensed)
--->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-
-<!--
-  Engine core — PROPRIETARY
-  This file is NOT in the public GitHub repository.
-  It is loaded from the deployment server (or locally for licensed users).
-  Source: core/engine.js
-  License: USAL-1.0 — Phillip Aguilar Ruiz III / UUON Foundation Inc.
--->
-<script src="core/engine.js"></script>
-
-<script>
-'use strict';
-
-// ── Renderer state ────────────────────────────────────────────────────────
-let scene, camera, renderer, mesh, geometry, material, orbitCtrl, clock;
-let time = 0;
-let bakedFrames = null, bakedMeta = null;
-let isPreviewing = false, previewT = 0;
-let engineReady = false;
-
-// ── Wait for engine core ──────────────────────────────────────────────────
-function checkEngine() {
-    if (typeof window.WFE !== 'undefined') {
-        engineReady = true;
-        document.getElementById('engineStatus').textContent = 'engine core ready · USAL-1.0';
-        document.getElementById('engineStatus').classList.add('ready');
-        init();
-    } else {
-        document.getElementById('engineStatus').textContent = 'engine core not found — check core/engine.js';
-        document.getElementById('engineStatus').classList.add('error');
-        console.error('WFE core not loaded. Ensure core/engine.js is present.');
-    }
-}
-
-// ── Parameters ────────────────────────────────────────────────────────────
-function getP() {
-    return {
-        A:   parseFloat(document.getElementById('amplitude').value),
-        k:   parseFloat(document.getElementById('frequency').value),
-        w:   parseFloat(document.getElementById('speed').value),
-        oct: parseInt(document.getElementById('octaves').value)
-    };
-}
-
-// ── Three.js scene setup ──────────────────────────────────────────────────
-function init() {
-    scene    = new THREE.Scene();
-    camera   = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-    renderer = new THREE.WebGLRenderer({ canvas:document.getElementById('canvas'), antialias:true, alpha:true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
-    camera.position.set(0, 0, 5);
-
-    orbitCtrl = new THREE.OrbitControls(camera, renderer.domElement);
-    orbitCtrl.enableDamping = true; orbitCtrl.dampingFactor = 0.08;
-    orbitCtrl.minDistance = 2.5; orbitCtrl.maxDistance = 20;
-
-    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-    const dl=new THREE.DirectionalLight(0xffffff,1.1); dl.position.set(10,10,5); scene.add(dl);
-    const fl=new THREE.DirectionalLight(0xffffff,0.4); fl.position.set(-8,-4,-6); scene.add(fl);
-
-    clock = new THREE.Clock();
-    buildMesh();
-    wireUI();
-    renderLoop();
-}
-
-function buildGeo(shape, res) {
-    if (shape==='sphere') return new THREE.SphereGeometry(2, res, res);
-    if (shape==='cube')   return new THREE.BoxGeometry(3,3,3, res,res,res);
-    return new THREE.ConeGeometry(2, 3, res);
-}
-
-function buildMesh() {
-    if (mesh) { scene.remove(mesh); geometry.dispose(); material.dispose(); }
-    const shape = document.getElementById('shape').value;
-    const res   = parseInt(document.getElementById('resolution').value);
-    geometry = buildGeo(shape, res);
-    const wf = document.getElementById('wireframe').checked;
-    material = new THREE.MeshStandardMaterial({
-        color:0x111111, roughness:0.55, metalness:0.1,
-        wireframe:wf, transparent:true, opacity: wf ? 0.85 : 1.0
-    });
-    mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-    resetBake();
-    const v=geometry.attributes.position.count;
-    const f=geometry.index?geometry.index.count/3:v/3;
-    document.getElementById('exportStats').textContent=`${v} vertices · ${Math.floor(f)} faces`;
-}
-
-// ── Deform — delegates entirely to WFE core ──────────────────────────────
-function deformAt(t) {
-    if (!mesh||!geometry||!engineReady) return;
-    const shape  = document.getElementById('shape').value;
-    const algKey = document.getElementById('algorithm').value;
-    const alg    = WFE.algorithms[algKey];
-    const p      = getP();
-    const pos    = geometry.attributes.position;
-
-    if (!geometry.userData.orig)
-        geometry.userData.orig = pos.array.slice();
-    const orig = geometry.userData.orig;
-
-    for (let i=0; i<pos.count; i++) {
-        const x=orig[i*3], y=orig[i*3+1], z=orig[i*3+2];
-        const s = WFE.surfCoord(shape, x, y, z);
-        const d = alg.fn(x, y, z, t, p, s);
-        const len = Math.sqrt(x*x+y*y+z*z)||1;
-        pos.setXYZ(i, x+(x/len)*d, y+(y/len)*d, z+(z/len)*d);
-    }
-    pos.needsUpdate = true;
-    geometry.computeVertexNormals();
-}
-
-function renderLoop() {
-    requestAnimationFrame(renderLoop);
-    const delta = clock.getDelta();
-    time += 0.016;
-
-    if (isPreviewing && bakedFrames) {
-        previewT = (previewT+delta) % bakedMeta.duration;
-        applyBakedAt(previewT);
-    } else {
-        deformAt(time);
-    }
-
-    if (document.getElementById('autoRotate').checked) {
-        mesh.rotation.y += 0.005;
-        mesh.rotation.x += 0.002;
-    }
-    orbitCtrl.update();
-    renderer.render(scene, camera);
-}
-
-// ── Bake — delegates to WFE.bake() ───────────────────────────────────────
-function resetBake() {
-    bakedFrames=null; bakedMeta=null; isPreviewing=false;
-    document.getElementById('previewBaked').checked=false;
-    document.getElementById('exportGlbBtn').disabled=true;
-    document.getElementById('bakeStats').textContent='Not baked yet.';
-}
-
-function doBake() {
-    if (!engineReady) return;
-    const shape      = document.getElementById('shape').value;
-    const algKey     = document.getElementById('algorithm').value;
-    const p          = getP();
-    const frameCount = parseInt(document.getElementById('bakeFrames').value);
-    const duration   = parseFloat(document.getElementById('bakeDuration').value);
-
-    if (!geometry.userData.orig)
-        geometry.userData.orig = geometry.attributes.position.array.slice();
-
-    const orig   = geometry.userData.orig;
-    const vCount = orig.length / 3;
-
-    // ← All computation delegated to proprietary core
-    bakedFrames = WFE.bake(orig, shape, algKey, p, frameCount, duration);
-
-    bakedMeta = {
-        shape, algKey,
-        algName:  WFE.algorithms[algKey].name,
-        formula:  WFE.algorithms[algKey].formula,
-        params: p, frameCount, duration,
-        fps: +(frameCount/duration).toFixed(3),
-        vCount
-    };
-
-    document.getElementById('exportGlbBtn').disabled=false;
-    document.getElementById('bakeStats').innerHTML=
-        `<span class="ok">✓ Baked</span> ${frameCount} frames · ${duration}s · ${(frameCount/duration).toFixed(1)} fps · ${vCount} verts`;
-}
-
-function applyBakedAt(t) {
-    if (!bakedFrames||!geometry) return;
-    const {frameCount,duration}=bakedMeta;
-    const pos=geometry.attributes.position;
-    const frac=((t/duration)*frameCount);
-    const fA=Math.floor(frac)%frameCount, fB=(fA+1)%frameCount;
-    const alpha=frac-Math.floor(frac);
-    const fAd=bakedFrames[fA], fBd=bakedFrames[fB];
-    for(let i=0;i<pos.count;i++){
-        pos.setXYZ(i,
-            fAd[i*3]*(1-alpha)+fBd[i*3]*alpha,
-            fAd[i*3+1]*(1-alpha)+fBd[i*3+1]*alpha,
-            fAd[i*3+2]*(1-alpha)+fBd[i*3+2]*alpha
-        );
-    }
-    pos.needsUpdate=true;
-    geometry.computeVertexNormals();
-}
-
-// ── Exports ───────────────────────────────────────────────────────────────
-function dl(blob, filename) {
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url; a.download=filename;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-
-function exportOBJ() {
-    if (!geometry) return;
-    const pos=geometry.attributes.position.array;
-    const idx=geometry.index?geometry.index.array:null;
-    const algKey=document.getElementById('algorithm').value;
-    const shape=document.getElementById('shape').value;
-    const alg=WFE.algorithms[algKey];
-    let obj=`# Wave Field 3D Engine — Static Frame\n# UUON Foundation Inc. — Phillip Aguilar Ruiz III\n# Algorithm: ${alg.name}\n# Shape: ${shape}\n\n`;
-    for(let i=0;i<pos.length;i+=3) obj+=`v ${pos[i].toFixed(6)} ${pos[i+1].toFixed(6)} ${pos[i+2].toFixed(6)}\n`;
-    obj+='\n';
-    if(idx){for(let i=0;i<idx.length;i+=3) obj+=`f ${idx[i]+1} ${idx[i+1]+1} ${idx[i+2]+1}\n`;}
-    else{for(let i=0;i<pos.length/3;i+=3) obj+=`f ${i+1} ${i+2} ${i+3}\n`;}
-    dl(new Blob([obj],{type:'text/plain'}),`wf3d_${shape}_${algKey}.obj`);
-    document.getElementById('exportStats').innerHTML=`<span class="ok">✓ Exported</span> ${pos.length/3} vertices`;
-}
-
-function exportGLB() {
-    if (!bakedFrames) doBake();
-    if (!engineReady) return;
-    try {
-        // ← GLB encoding fully delegated to proprietary core
-        const glbBuf = WFE.buildGLB(
-            geometry.userData.orig,
-            geometry.index ? geometry.index.array : null,
-            bakedFrames,
-            bakedMeta
-        );
-        const baseName=`wf3d_${bakedMeta.shape}_${bakedMeta.algKey}_baked`;
-        dl(new Blob([glbBuf],{type:'model/gltf-binary'}),`${baseName}.glb`);
-
-        const meta={
-            name:baseName,
-            source:'UUON Foundation Inc. — Wave Field 3D Engine v1.0',
-            model_family:'wave_field_3d',
-            export_mode:'animated_glb_morph_targets',
-            shape:bakedMeta.shape, algorithm:bakedMeta.algName, formula:bakedMeta.formula,
-            parameters:bakedMeta.params, frame_count:bakedMeta.frameCount,
-            duration_seconds:bakedMeta.duration, fps:bakedMeta.fps,
-            vertex_count:bakedMeta.vCount, glb_size_bytes:glbBuf.byteLength,
-            generated:new Date().toISOString(), license:'USAL-1.0',
-            attribution:'Phillip Aguilar Ruiz III / UUON Foundation Inc.'
-        };
-        setTimeout(()=>dl(new Blob([JSON.stringify(meta,null,2)],{type:'application/json'}),`${baseName}.metadata.json`),300);
-
-        document.getElementById('bakeStats').innerHTML=
-            `<span class="ok">✓ Exported</span> ${(glbBuf.byteLength/1024).toFixed(1)} KB GLB + metadata.json`;
-    } catch(e){
-        console.error('GLB export error:',e);
-        document.getElementById('bakeStats').innerHTML=`<span class="err">✗ Export error</span> — check console`;
-    }
-}
-
-// ── UI wiring ─────────────────────────────────────────────────────────────
-function setAlgInfo(key) {
-    const a=WFE.algorithms[key];
-    document.getElementById('algInfo').innerHTML=
-        `<div><span class="algorithm-code">${a.name}</span></div>
-         <div style="margin-top:5px;">${a.desc}</div>
-         <div style="margin-top:8px;font-family:monospace;font-size:10px;color:#555;">${a.formula}</div>`;
-}
-
-function wireUI() {
-    const ranges=['resolution','amplitude','frequency','speed','octaves'];
-    ranges.forEach(id=>{
-        const el=document.getElementById(id),dv=document.getElementById(id+'Value');
-        const fmt=v=>id==='resolution'?v+' segments':parseFloat(v).toFixed(id==='octaves'?0:2);
-        el.addEventListener('input',()=>{dv.textContent=fmt(el.value);if(id==='resolution')buildMesh();else resetBake();});
-        dv.textContent=fmt(el.value);
-    });
-    ['bakeFrames','bakeDuration'].forEach(id=>{
-        const el=document.getElementById(id),dv=document.getElementById(id+'Value');
-        el.addEventListener('input',()=>{dv.textContent=id==='bakeDuration'?parseFloat(el.value).toFixed(1):el.value;resetBake();});
-    });
-    document.getElementById('shape').addEventListener('change',buildMesh);
-    document.getElementById('algorithm').addEventListener('change',()=>{setAlgInfo(document.getElementById('algorithm').value);resetBake();});
-    document.getElementById('wireframe').addEventListener('change',()=>{if(material)material.wireframe=document.getElementById('wireframe').checked;});
-    document.getElementById('bakeBtn').addEventListener('click',doBake);
-    document.getElementById('exportGlbBtn').addEventListener('click',exportGLB);
-    document.getElementById('exportObjBtn').addEventListener('click',exportOBJ);
-    document.getElementById('freezeBtn').addEventListener('click',()=>{
-        time=0;deformAt(0);
-        const b=document.getElementById('freezeBtn');
-        b.textContent='Frozen!';b.classList.add('success');
-        setTimeout(()=>{b.textContent='Freeze to Current Frame';b.classList.remove('success');},2000);
-    });
-    document.getElementById('previewBaked').addEventListener('change',e=>{
-        if(e.target.checked){if(!bakedFrames)doBake();isPreviewing=true;previewT=0;}
-        else isPreviewing=false;
-    });
-    document.querySelectorAll('.section h3').forEach(h=>
-        h.addEventListener('click',()=>h.closest('.section').classList.toggle('collapsed')));
-    setAlgInfo('sine');
-}
-
-window.addEventListener('resize',()=>{
-    camera.aspect=window.innerWidth/window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth,window.innerHeight);
-});
-
-// Boot after DOM + scripts loaded
-window.addEventListener('load', checkEngine);
-</script>
-</body>
-</html>
+F₁: SINE-001
+Basic sinusoidal surface wave
+F₁(s,t) = A sin(ks + ωt)
