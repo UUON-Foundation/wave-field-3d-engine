@@ -1,0 +1,35 @@
+{
+  "name": "@uuon-foundation/wave-field-3d-engine",
+  "version": "1.0.0",
+  "description": "Parametric wave-deformation engine — 24 physically-grounded algorithms applied to 3D geometry with animated GLB morph-target export",
+  "homepage": "https://github.com/UUON-Foundation/wave-field-3d-engine#readme",
+  "bugs": {
+    "url": "https://github.com/UUON-Foundation/wave-field-3d-engine/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UUON-Foundation/wave-field-3d-engine.git"
+  },
+  "license": "LicenseRef-USAL-1.0",
+  "author": "Phillip Aguilar Ruiz III <phi1@uuonfoundation.com>",
+  "type": "commonjs",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wave-field",
+    "three-js",
+    "webgl",
+    "procedural-generation",
+    "graph-engine",
+    "3d-visualization",
+    "morph-targets",
+    "gltf",
+    "computational-geometry",
+    "uuon"
+  ]
+}
